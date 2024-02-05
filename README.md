@@ -1,5 +1,5 @@
 # CropYield
 
-Group 8: Raytheon Sponsorship Application
+Spring 2024 Raytheon Sponsorship Senior Design Project
 
 Crop Yield Predictive Model Application
