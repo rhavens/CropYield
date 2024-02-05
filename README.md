@@ -1,3 +1,5 @@
 # CropYield
 
-This is Group 8 of SE4485 (Spring 2024)'s Software Engineering project.
+Group 8: Raytheon Sponsorship Application
+
+Crop Yield Predictive Model Application
