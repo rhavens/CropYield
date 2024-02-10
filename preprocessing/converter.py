@@ -1,15 +1,29 @@
 import os
 
 
-def convertNASSCropDataToCsv(file_name_in: str, file_name_out: str):
-    pass
+def preprocess_crop_file(file_path, file_name):
+    chunksize = 16384
+    count = 0
+    with open(file_path + file_name, 'rb') as data_reader:
+        while True:
+            count += 1
+            if count % 10000 == 0:
+                print(str(count * chunksize / 1000000) + "MB processed")
+
+            chunk = data_reader.read(chunksize)
+            if len(chunk) == 0:
+                return
+
+            chunk = chunk.replace(b'\00', b'')  # the null characters in the input cause issues in postgres
+            with open(file_path + file_name + "_nullremoved", 'ab') as fout:
+                fout.write(chunk)
 
 
-def genCreateTableCommand(file_path_in: str) -> str:
+def gen_create_table_command(file_path: str, file_name: str) -> str:
     command = "CREATE TABLE crop_data ("
-    with open(file_path_in) as fin:
+    with open(file_path + file_name) as fin:
         first_line = fin.readline().strip('\n')
-    first_line = first_line.split('\t')
+        second_line = fin.readline().strip('\n')
     for line in first_line:
         command += '"' + line + '"' + " varchar, "
     command = command[:len(command) - 2]  # remove extra ", "
@@ -18,6 +32,6 @@ def genCreateTableCommand(file_path_in: str) -> str:
 
 
 if __name__ == "__main__":
-    file_name = "qs_crops_20240203.txt"
-    file_path_in = os.getcwd().replace("preprocessing", "data") + "\\" + file_name
-    print(genCreateTableCommand(file_path_in))
+    file_name = "qs.crops_20240203.txt"
+    file_path = os.getcwd().replace("preprocessing", "data") + "\\"
+    preprocess_crop_file(file_path, file_name)
