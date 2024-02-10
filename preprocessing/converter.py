@@ -4,6 +4,10 @@ import os
 def preprocess_crop_file(file_path, file_name):
     chunksize = 16384
     count = 0
+    outfile_name = file_name + "_preprocessed"
+    if os.path.exists(file_path + outfile_name):
+        os.remove(file_path + outfile_name)
+
     with open(file_path + file_name, 'rb') as data_reader:
         while True:
             count += 1
@@ -15,7 +19,7 @@ def preprocess_crop_file(file_path, file_name):
                 return
 
             chunk = chunk.replace(b'\00', b'')  # the null characters in the input cause issues in postgres
-            with open(file_path + file_name + "_preprocessed", 'ab') as fout:
+            with open(file_path + outfile_name, 'ab') as fout:
                 fout.write(chunk)
 
 
@@ -38,5 +42,5 @@ The output will be a new file named "<filename>_preprocessed" in the /data folde
 """
 if __name__ == "__main__":
     file_name = "qs.crops_20240203.txt"
-    file_path = os.getcwd().replace("preprocessing", "data") + "\\"
+    file_path = os.getcwd().replace("preprocessing", "") + os.path.sep + "data" + os.path.sep
     preprocess_crop_file(file_path, file_name)
