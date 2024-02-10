@@ -1,8 +1,8 @@
 import os
 
 
-def preprocess_crop_file(file_path, file_name):
-    chunksize = 16384
+def preprocess_crop_file(file_path: str, file_name: str) -> None:
+    chunk_size = 16384
     count = 0
     outfile_name = file_name + "_preprocessed"
     if os.path.exists(file_path + outfile_name):
@@ -12,10 +12,11 @@ def preprocess_crop_file(file_path, file_name):
         while True:
             count += 1
             if count % 10000 == 0:
-                print(str(count * chunksize / 1000000) + "MB processed")
+                print(str(count * chunk_size / 1000000) + "MB processed")
 
-            chunk = data_reader.read(chunksize)
+            chunk = data_reader.read(chunk_size)
             if len(chunk) == 0:
+                print("Finished preprocessing")
                 return
 
             chunk = chunk.replace(b'\00', b'')  # the null characters in the input cause issues in postgres
@@ -23,7 +24,7 @@ def preprocess_crop_file(file_path, file_name):
                 fout.write(chunk)
 
 
-def gen_create_table_command(file_path: str, file_name: str) -> str:
+def gen_create_table_command(file_path: str, file_name: str) -> None:
     command = "CREATE TABLE crop_data ("
     with open(file_path + file_name) as fin:
         first_line = fin.readline().strip('\n')
@@ -31,7 +32,7 @@ def gen_create_table_command(file_path: str, file_name: str) -> str:
         command += '"' + line + '"' + " varchar, "
     command = command[:len(command) - 2]  # remove extra ", "
     command += ");"
-    return command
+    print(command)
 
 
 """
