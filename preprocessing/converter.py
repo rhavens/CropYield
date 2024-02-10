@@ -26,6 +26,43 @@ def preprocess_crop_file(file_path: str, file_name: str) -> None:
                 fout.write(chunk)
 
 
+def gen_select_into_command():
+    columns_to_keep = [
+        "SOURCE_DESC",
+        "SECTOR_DESC",
+        "GROUP_DESC",
+        "COMMODITY_DESC",
+        "PRODN_PRACTICE_DESC",
+        "UTIL_PRACTICE_DESC",
+        "STATISTICCAT_DESC",
+        "UNIT_DESC",
+        "SHORT_DESC",
+        "DOMAIN_DESC",
+        "DOMAINCAT_DESC",
+        "AGG_LEVEL_DESC",
+        "STATE_ANSI",
+        "STATE_FIPS_CODE",
+        "STATE_ALPHA",
+        "STATE_NAME",
+        "ASD_CODE",
+        "ASD_DESC",
+        "COUNTY_ANSI",
+        "COUNTY_CODE",
+        "COUNTY_NAME",
+        "LOCATION_DESC",
+        "YEAR",
+        "FREQ_DESC",
+        "REFERENCE_PERIOD_DESC",
+        "VALUE"
+    ]
+    command = "SELECT "
+    for column in columns_to_keep:
+        command += '"' + column + '", '
+    command = command[:len(command) - 2]  # remove extra ", "
+    command += " INTO crop_data_pruned FROM public.crop_data;"
+    print(command)
+
+
 def gen_create_table_command(file_path: str, file_name: str) -> None:
     command = "CREATE TABLE crop_data ("
     with open(file_path + file_name) as fin:
@@ -48,4 +85,5 @@ if __name__ == "__main__":
     file_name = "qs.crops_20240203.txt"
     file_path = os.getcwd().replace("preprocessing", "") + os.path.sep + "data" + os.path.sep
     # preprocess_crop_file(file_path, file_name)
-    gen_create_table_command(file_path, file_name)
+    # gen_create_table_command(file_path, file_name)
+    # gen_select_into_command()
