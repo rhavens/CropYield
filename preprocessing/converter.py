@@ -5,6 +5,8 @@ def preprocess_crop_file(file_path: str, file_name: str) -> None:
     chunk_size = 16384
     count = 0
     outfile_name = file_name + "_preprocessed"
+
+    # new file is written to using append mode, so must delete the new file if it already exists
     if os.path.exists(file_path + outfile_name):
         os.remove(file_path + outfile_name)
 
@@ -28,6 +30,7 @@ def gen_create_table_command(file_path: str, file_name: str) -> None:
     command = "CREATE TABLE crop_data ("
     with open(file_path + file_name) as fin:
         first_line = fin.readline().strip('\n')
+    first_line = first_line.split('\t')
     for line in first_line:
         command += '"' + line + '"' + " varchar, "
     command = command[:len(command) - 2]  # remove extra ", "
@@ -44,4 +47,5 @@ The output will be a new file named "<filename>_preprocessed" in the /data folde
 if __name__ == "__main__":
     file_name = "qs.crops_20240203.txt"
     file_path = os.getcwd().replace("preprocessing", "") + os.path.sep + "data" + os.path.sep
-    preprocess_crop_file(file_path, file_name)
+    # preprocess_crop_file(file_path, file_name)
+    gen_create_table_command(file_path, file_name)
