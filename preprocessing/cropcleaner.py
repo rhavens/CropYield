@@ -29,12 +29,10 @@ def tons_to_lbs(row):
 # Place input file to clean here
 preclean = pd.read_csv("data/CropYieldSubset.csv")
 
-relevant_columns = ['CORN', 'YIELD', 'BU / ACRE', 'TOTAL', 'ILLINOIS, WEST, WARREN', 'YEAR']
-
 
 # Begin Filtering
 preclean['VALUE'] = preclean.apply(tons_to_lbs, axis=1)
 
-# Apply the conversion function to the 'BU / ACRE' column
+# Check changes
 print(preclean.head())
 
