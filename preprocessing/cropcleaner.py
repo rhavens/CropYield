@@ -33,6 +33,6 @@ preclean = pd.read_csv("data/CropYieldSubset.csv")
 # Begin Filtering
 preclean['VALUE'] = preclean.apply(tons_to_lbs, axis=1)
 
-# Apply the conversion function to the 'BU / ACRE' column
+# Check changes
 print(preclean.head())
 
