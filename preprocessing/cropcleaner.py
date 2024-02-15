@@ -28,7 +28,10 @@ def bushels_to_lbs(row):
             value_in_bushels = row['VALUE']
             value_in_bushels = value_in_bushels.replace(",", "")
             value_in_bushels = float(value_in_bushels)
-            value_in_lbs = value_in_bushels * 60  # 1 bushel = 60 pounds
+
+            # 1 bushel = 60 pounds 
+            # Info gathered from https://grains.org/markets-tools-data/tools/converting-grain-units/
+            value_in_lbs = value_in_bushels * 60  
             preclean.at[row.name, 'UNIT_DESC'] = 'LB'
             return value_in_lbs
         else:
