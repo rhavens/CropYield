@@ -42,17 +42,37 @@ def bushels_to_lbs(row):
 
 
 
+
+
+
+
+
+
+
+
+
+
 # Driver Code
 
 # Place input file to clean here
 preclean = pd.read_csv("data/cropsubset1000.csv")
 
-# Begin Filtering
+# Eliminate anything before GMO (1994). 
+# Source: https://www.fda.gov/food/agricultural-biotechnology/science-and-history-gmos-and-other-food-modification-processes
+preclean = preclean[preclean['YEAR'] >= 1994]
+
+# Convert all units to lbs
 preclean['VALUE'] = preclean.apply(tons_to_lbs, axis=1)
 preclean['VALUE'] = preclean.apply(bushels_to_lbs, axis=1)
 
+preclean['VALUE'] = preclean['VALUE'].apply(lambda x: None if x == '(D)' else x)
 preclean.dropna(subset=['VALUE'], inplace=True)
+
+preclean = preclean[preclean['UNIT_DESC'].isin(['TONS', 'BU', 'LB'])]
+columns_to_drop = ['SECTOR_DESC', 'GROUP_DESC', 'DOMAINCAT_DESC', 'SHORT_DESC', 'STATISTICCAT_DESC', 'PRODN_PRACTICE_DESC', 'GROUP_DESC', 'SECTOR_DESC', 'REFERENCE_PERIOD_DESC', 'LOCATION_DESC', 'ASD_CODE', 'ASD_DESC', 'UTIL_PRACTICE_DESC']
+preclean.drop(columns_to_drop, axis=1, inplace=True)
+
 # Check changes
 print(preclean.head())
 
-preclean.to_csv('data/testcleandataset.csv', index=False)
+preclean.to_csv('modeldata.csv', index=False)
