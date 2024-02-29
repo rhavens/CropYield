@@ -20,6 +20,9 @@ preclean = preclean[preclean['UNIT_DESC'].isin(['BU'])]
 columns_to_drop = ['SECTOR_DESC', 'GROUP_DESC', 'DOMAINCAT_DESC', 'SHORT_DESC', 'STATISTICCAT_DESC', 'PRODN_PRACTICE_DESC', 'GROUP_DESC', 'SECTOR_DESC', 'REFERENCE_PERIOD_DESC', 'LOCATION_DESC', 'ASD_CODE', 'ASD_DESC', 'UTIL_PRACTICE_DESC']
 preclean.drop(columns_to_drop, axis=1, inplace=True)
 
+preclean = preclean[preclean['SOURCE_DESC'] != 'SURVEY']
+
+
 # Check changes
 print(preclean.head())
 
