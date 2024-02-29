@@ -9,6 +9,7 @@ def preprocess_crop_file(file_path: str, file_name: str) -> None:
     # new file is written to using append mode, so must delete the new file if it already exists
     if os.path.exists(file_path + outfile_name):
         os.remove(file_path + outfile_name)
+        print("Removed existing preprocessed file")
 
     with open(file_path + file_name, 'rb') as data_reader:
         while True:
@@ -82,8 +83,13 @@ Set "file_name" to the name of the qs crop file
 The output will be a new file named "<filename>_preprocessed" in the /data folder
 """
 if __name__ == "__main__":
-    file_name = "qs.crops_20240203.txt"
     file_path = os.getcwd().replace("preprocessing", "") + os.path.sep + "data" + os.path.sep
+    files = os.listdir(file_path)
+    print("Select which file to preprocess")
+    for i, file in enumerate(files):
+        print(str(i) + ": " + file)
+
+    file_name = files[int(input("Enter number: "))]
     # preprocess_crop_file(file_path, file_name)
     # gen_create_table_command(file_path, file_name)
     # gen_select_into_command()

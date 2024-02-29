@@ -1,12 +1,12 @@
 import pandas as pd
 
+
 # Program for cleaning data in crop yield dataset to prepare it for model predictions
 # The program is structured with functions on top, driver code on bottom
 
 
 # Function to convert all tons values to lbs
 def tons_to_lbs(row):
-
     try:
         if row['UNIT_DESC'] == 'TONS':
             value_in_tons = row['VALUE']
@@ -21,6 +21,7 @@ def tons_to_lbs(row):
         print(f"Failed to convert '{value_in_tons}' to float")
         return None
 
+
 # Function to convert bushels to lbs
 def bushels_to_lbs(row):
     try:
@@ -31,7 +32,7 @@ def bushels_to_lbs(row):
 
             # 1 bushel = 60 pounds 
             # Info gathered from https://grains.org/markets-tools-data/tools/converting-grain-units/
-            value_in_lbs = value_in_bushels * 60  
+            value_in_lbs = value_in_bushels * 60
             preclean.at[row.name, 'UNIT_DESC'] = 'LB'
             return value_in_lbs
         else:
@@ -39,17 +40,6 @@ def bushels_to_lbs(row):
     except ValueError:
         print(f"Failed to convert '{value_in_bushels}' to float")
         return None
-
-
-
-
-
-
-
-
-
-
-
 
 
 # Driver Code
@@ -69,7 +59,9 @@ preclean['VALUE'] = preclean['VALUE'].apply(lambda x: None if x == '(D)' else x)
 preclean.dropna(subset=['VALUE'], inplace=True)
 
 preclean = preclean[preclean['UNIT_DESC'].isin(['TONS', 'BU', 'LB'])]
-columns_to_drop = ['SECTOR_DESC', 'GROUP_DESC', 'DOMAINCAT_DESC', 'SHORT_DESC', 'STATISTICCAT_DESC', 'PRODN_PRACTICE_DESC', 'GROUP_DESC', 'SECTOR_DESC', 'REFERENCE_PERIOD_DESC', 'LOCATION_DESC', 'ASD_CODE', 'ASD_DESC', 'UTIL_PRACTICE_DESC']
+columns_to_drop = ['SECTOR_DESC', 'GROUP_DESC', 'DOMAINCAT_DESC', 'SHORT_DESC', 'STATISTICCAT_DESC',
+                   'PRODN_PRACTICE_DESC', 'GROUP_DESC', 'SECTOR_DESC', 'REFERENCE_PERIOD_DESC', 'LOCATION_DESC',
+                   'ASD_CODE', 'ASD_DESC', 'UTIL_PRACTICE_DESC']
 preclean.drop(columns_to_drop, axis=1, inplace=True)
 
 # Check changes
