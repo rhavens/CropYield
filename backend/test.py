@@ -8,7 +8,7 @@ county_code = 37
 url = 'http://127.0.0.1:5000/predict'  # Adjust the URL if your server is running on a different port or host
 
 # Data to send in the request (in JSON format)
-data = {'countyCode': county_code}
+data = {'COUNTY_CODE': county_code}
 
 # Send a POST request to the server
 response = requests.post(url, json=data)

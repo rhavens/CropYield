@@ -9,11 +9,13 @@ app = Flask(__name__)
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    
+
     data = request.get_json()
-    county_code = data['countyCode']
-    input_file = 'data/crop_data_cleaned.csv'  
-    output_file = f'data/county_{county_code}_subset.csv' 
+    county_code = data.get('COUNTY_CODE')  # Use get method to safely access key
+    if county_code is None:
+        return jsonify({'error': 'Missing COUNTY_CODE in request data'}), 400  # Return error response
+    input_file = 'data/crop_data_cleaned.csv'  # Adjust the input file path as needed
+    output_file = f'data/county_{county_code}_subset.csv'  # Adjust the output file path as needed
     cropcleaner.process_county(county_code, input_file, output_file)
     county_data = pd.read_csv(output_file)
 

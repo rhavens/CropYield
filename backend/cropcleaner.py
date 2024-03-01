@@ -5,14 +5,15 @@ import pandas as pd
 
 def process_county(county_code, input_file, output_file):
     
+    countycode = int(county_code)
     maindata = input_file
-    
-    countydata = maindata[maindata['COUNTY_CODE'] == county_code]
+    # Filter the dataset into 
+    countydata = maindata[maindata['COUNTY_CODE'] == countycode]
 
     # Save the subset for the specified county to a CSV file
     countydata.to_csv(output_file, index=False)
 
-    print(f"Data subset created for county {county_code}")
+    print(f"Data subset created for county {countycode}")
 
 if __name__ == '__main__':
     
