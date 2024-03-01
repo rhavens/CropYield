@@ -7,7 +7,7 @@ import pandas as pd
 # Driver Code
 
 # Place input file to clean here
-preclean = pd.read_csv("data/cropsubset1000.csv")
+preclean = pd.read_csv("data/crop_data_cleaned.csv")
 
 # Eliminate anything before GMO (1994). 
 # Source: https://www.fda.gov/food/agricultural-biotechnology/science-and-history-gmos-and-other-food-modification-processes
@@ -22,8 +22,7 @@ preclean.drop(columns_to_drop, axis=1, inplace=True)
 
 preclean = preclean[preclean['SOURCE_DESC'] != 'SURVEY']
 
-
 # Check changes
-print(preclean.head())
+# print(preclean.head())
 
 preclean.to_csv('modeldata.csv', index=False)
