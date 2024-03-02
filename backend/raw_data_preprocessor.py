@@ -83,7 +83,7 @@ Set "file_name" to the name of the qs crop file
 The output will be a new file named "<filename>_preprocessed" in the /data folder
 """
 if __name__ == "__main__":
-    file_path = os.getcwd().replace("preprocessing", "") + os.path.sep + "data" + os.path.sep
+    file_path = os.getcwd().replace("backend", "") + os.path.sep + "data" + os.path.sep
     files = os.listdir(file_path)
     print("Select which file to preprocess")
     for i, file in enumerate(files):

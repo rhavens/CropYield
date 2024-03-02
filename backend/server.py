@@ -3,7 +3,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
-import cropcleaner  # Import your preprocessing script
+import data_filterer  # Import your preprocessing script
 
 app = Flask(__name__)
 
@@ -11,17 +11,22 @@ app = Flask(__name__)
 def predict():
 
     data = request.get_json()
-    county_code = data.get('COUNTY_CODE')  # Use get method to safely access key
+    county_code = data.get('COUNTY_CODE')
+    state_code = data.get('STATE_CODE')
     if county_code is None:
-        return jsonify({'error': 'Missing COUNTY_CODE in request data'}), 400  # Return error response
-    input_file = 'data/crop_data_cleaned.csv'  # Adjust the input file path as needed
-    output_file = f'data/county_{county_code}_subset.csv'  # Adjust the output file path as needed
-    cropcleaner.process_county(county_code, input_file, output_file)
-    county_data = pd.read_csv(output_file)
+        return jsonify({'error': 'Missing COUNTY_CODE in request data'}), 400
+    if state_code is None:
+        return jsonify({'error': 'Missing STATE_CODE in request data'}), 400
+
+    input_file = 'crop_data_cleaned.csv'  # Adjust the input file path as needed
+    output_file = f'state_{state_code}_county_{county_code}_subset.csv'  # Adjust the output file path as needed
+
+    county_data = data_filterer.process_county(state_code, county_code, input_file, output_file)
+    # county_data = pd.read_csv(output_file)
 
     # Load 
-    X = county_data[['YEAR', 'VALUE']]
-    y = county_data['CropYield']
+    X = county_data[['YEAR']]
+    y = county_data[["VALUE"]]
 
     # Split the data into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -37,11 +42,11 @@ def predict():
     mse = mean_squared_error(y_test, predictions)
 
     results = {
-        'predictions': predictions.tolist(), 
+        'predictions': predictions.tolist(),
         'mse': mse
     }
     print(results)
-    # return jsonify(results)
+    return jsonify(results)
 
 if __name__ == '__main__':
     app.run(debug=True)
