@@ -20,7 +20,9 @@ if __name__ == "__main__":
     if response.status_code == 200:
         # Print the predictions returned by the server
         predictions = response.json()['predictions']
+        mse = response.json()['mse']
         print(f'Predictions for county code {county_code}: {predictions}')
+        print(f'MSE for county code {county_code}: {mse}')
     else:
         # Print an error message if the request failed
         print(f'Error: {response.status_code}')
