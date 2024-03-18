@@ -8,7 +8,7 @@ import data_filterer
 
 
 app = Flask(__name__)
-CORS(app, resources={r"/predict": {"origins": "http://localhost:3000"}})
+CORS(app)
 
 @app.route('/predict', methods=['POST'])
 def predict():
