@@ -1,14 +1,24 @@
 import React, { useState } from 'react';
 import './App.css';
 import cornImage from './cornimage.jpeg';
+import CropYieldPrediction from './CropYieldPredictions'; // Import the CropYieldPrediction component
+
 
 function App() {
   const [countyCode, setCountyCode] = useState('');
+  const [stateCode, setStateCode] = useState('');
   const [pesticideUse, setPesticideUse] = useState('');
   const [predictionResult, setPredictionResult] = useState(null);
+  const [error, setError] = useState(null);
+  const [formSubmitted, setFormSubmitted] = useState(false);
+
 
   const handleCountyCodeChange = (event) => {
     setCountyCode(event.target.value);
+  };
+
+  const handleStateCodeChange = (event) => {
+    setStateCode(event.target.value);
   };
 
   const handlePesticideUseChange = (event) => {
@@ -17,6 +27,7 @@ function App() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setFormSubmitted(true);
     
     try {
       const response = await fetch('http://localhost:5000/predict', {
@@ -25,7 +36,8 @@ function App() {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          COUNTY_CODE: countyCode,
+          COUNTY_CODE: parseInt(countyCode),
+          STATE_CODE: parseInt(stateCode),
           PESTICIDE_USE: pesticideUse
         })
       });
@@ -42,9 +54,13 @@ function App() {
       <header className="App-header">
         <h1>Corn Crop Yield Prediction</h1>
         <img src={cornImage} alt="corn-image" style={{ width: '10%', height: 'auto'}}></img>
-        <p>Please select the county and if you are using pesticides.</p> 
+        <p>Please select your county and state code. Then if you are using pesticides.</p> 
         <p>The model will display future predictions for your county's yield.</p>
         <form onSubmit={handleSubmit}>
+        <label>
+            State Code:
+            <input type="number" value={stateCode} onChange={handleStateCodeChange} />
+          </label>
           <label>
             County Code:
             <input type="number" value={countyCode} onChange={handleCountyCodeChange} />
@@ -59,6 +75,10 @@ function App() {
           </label>
           <button type="submit">Submit</button>
         </form>
+        {formSubmitted && <CropYieldPrediction predictionResult={predictionResult} />}
+
+        {/* Display error message if there is an error */}
+        {error && <div>Error: {error}</div>}
       </header>
     </div>
   );

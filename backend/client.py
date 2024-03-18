@@ -11,7 +11,7 @@ if __name__ == "__main__":
 
     # Data to send in the request (in JSON format)
     data = {'COUNTY_CODE': county_code,
-            'STATE_CODE': state_code}
+            'STATE_CODE': state_code,}
 
     # Send a POST request to the server
     response = requests.post(url, json=data)
