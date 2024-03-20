@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
 import pandas as pd
 from sklearn.model_selection import train_test_split
@@ -12,7 +12,7 @@ CORS(app)
 
 @app.route('/predict', methods=['POST'])
 def predict():
-
+    
     data = request.get_json()
     county_code = data.get('COUNTY_CODE')
     state_code = data.get('STATE_CODE')
