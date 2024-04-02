@@ -1,19 +1,18 @@
+// CropYieldPredictions.js
 import React from 'react';
 
-function CropYieldPrediction({ predictionResult }) {
+const CropYieldPrediction = ({ predictionResult }) => {
+  if (!predictionResult) {
+    return null;
+  }
+
   return (
     <div>
-      <h1>Crop Yield Prediction</h1>
-      {predictionResult ? (
-        <div>
-          <p>Predicted yield: {predictionResult.predictions}</p>
-          <p>MSE: {predictionResult.mse}</p>
-        </div>
-      ) : (
-        <p>No prediction results yet.</p>
-      )}
+      <h2>Prediction Results</h2>
+      <p>Next year's predicted yield:</p>
+      <img src={predictionResult.graph_image} alt="Prediction Graph" />
     </div>
   );
-}
+};
 
 export default CropYieldPrediction;
