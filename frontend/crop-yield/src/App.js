@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import cornImage from './cornimage.jpeg';
+import Chart from 'chart.js/auto'; // Import Chart.js
 
 function App() {
   const [countyCode, setCountyCode] = useState('');
   const [stateCode, setStateCode] = useState('');
   const [predictionResult, setPredictionResult] = useState(null);
+  const [cleanedData, setCleanedData] = useState(null); // State to hold cleaned data
   const [error, setError] = useState(null);
   const [formSubmitted, setFormSubmitted] = useState(false);
-  const [graphImage, setGraphImage] = useState(null);
 
   const handleCountyCodeChange = (event) => {
     setCountyCode(event.target.value);
@@ -21,9 +22,10 @@ function App() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setFormSubmitted(true);
+    setPredictionResult(null); // Clear prediction result
+    setCleanedData(null);
     
     try {
-      //Adjust to whatever the IP will be for the server
       const response = await fetch("http://127.0.0.1:5000/predict", {
         method: 'POST',
         headers: {
@@ -36,20 +38,70 @@ function App() {
       });
       
       const data = await response.json();
-      console.log(data); // Check if the response data is correct
+      console.log(data);
       
-      setPredictionResult(data.nextYearPrediction); // Update prediction result state
-      setGraphImage(data.graph_image);
+      setPredictionResult(data.nextYearPrediction);
+      setCleanedData(data.cleaned_csv_data);
     } catch (error) {
       console.error('Error:', error);
       setError(error.message);
     }
-    
   };
-  
+
+  const prediction = predictionResult && predictionResult.length > 0 ? predictionResult[0] : null;
+
+  // Draw the scatter plot when cleaned data and prediction result are available
   useEffect(() => {
-    console.log('graphImage:', graphImage); // Log the graphImage state
-  }, [graphImage]);
+    if (cleanedData && prediction !== null) {
+      const ctx = document.getElementById('scatterChart').getContext('2d');
+      
+      // Extract x and y data from cleanedData
+      const xData = cleanedData.map(entry => entry.YEAR);
+      const yData = cleanedData.map(entry => entry.VALUE);
+
+      const nextYear = new Date().getFullYear() + 1;
+
+      const scatterChartData = {
+        datasets: [{
+          label: 'Crop Yield Over Years',
+          data: xData.map((x, i) => ({ x, y: yData[i] })),
+          backgroundColor: 'blue',
+          pointRadius: 5,
+          pointHoverRadius: 8,
+        },
+        {
+          label: 'Next Year Prediction',
+          data: [{ x: nextYear, y: prediction }],
+          backgroundColor: 'red',
+          pointRadius: 8,
+          pointHoverRadius: 10,
+        }]
+      };
+
+      new Chart(ctx, {
+        type: 'scatter',
+        data: scatterChartData,
+        options: {
+          scales: {
+            x: {
+              type: 'linear',
+              position: 'bottom',
+              title: {
+                display: true,
+                text: 'Year'
+              }
+            },
+            y: {
+              title: {
+                display: true,
+                text: 'Yield'
+              }
+            }
+          }
+        }
+      });
+    }
+  }, [cleanedData, prediction]);
 
   return (
     <div className="App">
@@ -69,12 +121,11 @@ function App() {
           </label>
           <button type="submit">Submit</button>
         </form>
-        {formSubmitted && predictionResult !== null && (
+        {formSubmitted && cleanedData && predictionResult !== null && (
           <div>
             <h2>Prediction Results</h2>
             <p style={{fontSize:"30px"}}>Next year's predicted yield: {Math.round(predictionResult)} bushels</p>
-            
-            {graphImage && <img src={`${graphImage}?${new Date().getTime()}`} alt="Prediction Graph" />}
+            <canvas id="scatterChart" width="400" height="400"></canvas> {/* Chart container */}
           </div>
         )}
 

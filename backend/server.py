@@ -1,39 +1,14 @@
 import os
 import pandas as pd
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_squared_error
 from datetime import datetime
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
 import data_filterer
-from flask import Flask, send_from_directory
-
-
 
 app = Flask(__name__)
 CORS(app)
-
-# Define the directory to save static files
-STATIC_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
-app.config['STATIC_FOLDER'] = STATIC_FOLDER
-
-def generate_plot(X, y, next_year, next_year_prediction):
-    plt.figure(figsize=(10, 6))
-    plt.scatter(X, y, color='blue', label='Historical Yield')
-    plt.scatter(next_year, next_year_prediction, color='red', label='Predicted Yield for Next Year')
-    plt.xlabel('Year')
-    plt.ylabel('Yield')
-    plt.title('Crop Yield Over Years')
-    plt.legend()
-    plt.grid(True)
-    temp_file = os.path.join(app.config['STATIC_FOLDER'], 'temp_plot.png')
-    plt.savefig(temp_file)
-    plt.close()  # Close plot to prevent memory leaks
-    return temp_file
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -49,7 +24,6 @@ def predict():
     output_file = f'state_{state_code}_county_{county_code}_subset.csv'  # Adjust the output file path as needed
 
     county_data = data_filterer.process_county(state_code, county_code, input_file, output_file)
-    # county_data = pd.read_csv(output_file)
 
     X = county_data[['YEAR']]
     y = county_data[["VALUE"]]
@@ -64,20 +38,13 @@ def predict():
     next_year_data = pd.DataFrame({'YEAR': [next_year]})
     next_year_prediction = model.predict(next_year_data)
 
-    generate_plot(X, y, next_year, next_year_prediction)
-
     # Prepare results
     results = {
         'nextYearPrediction': next_year_prediction.tolist()[0],  # Assuming single prediction
-        'graph_image': 'http://127.0.0.1:5000/static/temp_plot.png'
+        'cleaned_csv_data': county_data.to_dict(orient='records')
     }
 
     return jsonify(results)
-
-# Define a route to serve static files
-@app.route('/static/<path:path>')
-def serve_static(path):
-    return send_from_directory('static', path)
 
 if __name__ == '__main__':
     app.run(debug=True)
