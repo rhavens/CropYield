@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import './App.css';
 import cornImage from './cornimage.jpeg';
 import Chart from 'chart.js/auto'; // Import Chart.js
@@ -11,13 +11,13 @@ function App() {
   const [error, setError] = useState(null);
   const [formSubmitted, setFormSubmitted] = useState(false);
 
-  const handleCountyCodeChange = (event) => {
-    setCountyCode(event.target.value);
-  };
+    const handleCountyCodeChange = (event) => {
+        setCountyCode(event.target.value);
+    };
 
-  const handleStateCodeChange = (event) => {
-    setStateCode(event.target.value);
-  };
+    const handleStateCodeChange = (event) => {
+        setStateCode(event.target.value);
+    };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -129,11 +129,11 @@ function App() {
           </div>
         )}
 
-        {/* Display error message if there is an error */}
-        {error && <div>Error: {error}</div>}
-      </header>
-    </div>
-  );
+                {/* Display error message if there is an error */}
+                {error && <div>Error: {error}</div>}
+            </header>
+        </div>
+    );
 }
 
 export default App;
