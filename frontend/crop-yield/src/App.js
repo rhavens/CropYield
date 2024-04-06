@@ -94,7 +94,7 @@ function App() {
                 // Added callback function to format tick labels
                 callback: function(value, index, values) {
                   // The callback function takes the tick value (year) and formats it using regex to insert commas for every three digits
-                  return value.toString().replace(",", "");
+                  return value.toString().replace(",", ""); //replaced the comma with nothing...
                 }
 
             }
