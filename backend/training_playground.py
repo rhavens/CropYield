@@ -69,7 +69,8 @@ def train_models(data: pd.DataFrame, location) -> float:
         X_train, X_test, y_train, y_test = train_test_split(x, y, random_state=42)
         return linear_model(X_train, X_test, y_train, y_test, location)
     except ValueError:
-        return -1  # some counties have such little data that it is impossible to train a model
+        return -1
+        print("error")# some counties have such little data that it is impossible to train a model
 
     # ard_model(X_train, X_test, y_train, y_test)
 
