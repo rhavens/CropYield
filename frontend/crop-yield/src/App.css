@@ -36,3 +36,8 @@ button {
 button:hover {
   background-color: #0056b3;
 }
+
+.chartCanvas {
+  width: 200px;
+  height: 200px;
+}

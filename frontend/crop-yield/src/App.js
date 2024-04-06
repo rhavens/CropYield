@@ -125,7 +125,7 @@ function App() {
           <div>
             <h2>Prediction Results</h2>
             <p style={{fontSize:"30px"}}>Next year's predicted yield: {Math.round(predictionResult)} bushels</p>
-            <canvas id="scatterChart" width="400" height="400"></canvas> {/* Chart container */}
+            <canvas id="scatterChart" className="chartCanvas"></canvas> {/* Chart container */}
           </div>
         )}
 
