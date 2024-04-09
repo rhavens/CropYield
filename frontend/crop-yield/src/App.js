@@ -131,7 +131,7 @@ function App() {
             const yData = cleanedData.map(entry => entry.VALUE);
 
             const nextYear = new Date().getFullYear() + 1;
-
+            
             const scatterChartData = {
                 datasets: [{
                     label: 'Crop Yield Over Years',
@@ -174,7 +174,7 @@ function App() {
                         y: {
                             title: {
                                 display: true,
-                                text: 'Yield'
+                                text: 'Corn Yield in Bushels'
                             }
                         }
                     }
@@ -212,8 +212,10 @@ function App() {
             <header className="App-header">
                 <h1>Corn Crop Yield Prediction</h1>
                 <img src={cornImage} alt="corn-image" style={{width: '10%', height: 'auto'}}></img>
-                <p>Please select your county and state code.</p>
                 <p>The model will display future predictions for your county's yield.</p>
+                
+                <p>Please select your state and county:</p>
+                
                 <form onSubmit={handleSubmit}>
                     <label>
                         State Name:
@@ -238,8 +240,8 @@ function App() {
                 {formSubmitted && cleanedData && predictionResult !== null && (
                     <div>
                         <h2>Prediction Results</h2>
-                        <p style={{fontSize: "30px"}}>Next year's predicted
-                            yield: {Math.round(predictionResult)} bushels</p>
+                        <p style={{fontSize: "30px"}}>Next Year's Predicted
+                            Yield: {Math.round(predictionResult)} Bushels</p>
                         <canvas id="scatterChart" className="chartCanvas"></canvas>
                         {/* Chart container */}
                     </div>
