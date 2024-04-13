@@ -10,17 +10,19 @@ def process_county(state_code: int, county_code: int, file_name: str, output_fil
     file_path = os.getcwd().replace("backend", "") + os.path.sep + "data" + os.path.sep
 
     df = pd.read_csv(file_path + file_name)
-    df = df.loc[df["COUNTY_CODE"] != 998]   # County Aggregate, should not be included
+    df = df.loc[df["county_code"] != 998]   # County Aggregate, should not be included
+    # df = df.loc[df["COUNTY_CODE"] != 998]   # County Aggregate, should not be included
     result = None
     if state_code == -1:
         result = df
     elif county_code == -1:
-        result = df.loc[df["STATE_FIPS_CODE"] == state_code]
+        result = df.loc[df["state_code"] == state_code]
+        # result = df.loc[df["STATE_FIPS_CODE"] == state_code]
     else:
-        result = df.loc[(df['COUNTY_CODE'] == county_code) & (df["STATE_FIPS_CODE"] == state_code)]
-    # only_counties = df.loc[(df['county_code'] == county_code) & (df["state_code"] == state_code)]
+        result = df.loc[(df['county_code'] == county_code) & (df["state_code"] == state_code)]
+        # result = df.loc[(df['COUNTY_CODE'] == county_code) & (df["STATE_FIPS_CODE"] == state_code)]
 
-    result.to_csv(file_path + output_file, index=False)  # used for debugging
+    # result.to_csv(file_path + output_file, index=False)  # used for debugging
     return result
 
 
