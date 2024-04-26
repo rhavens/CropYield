@@ -11,11 +11,29 @@ def process_county(state_code: int, county_code: int, file_name: str, output_fil
 
     df = pd.read_csv(file_path + file_name)
     df = df.loc[df["COUNTY_CODE"] != 998]   # County Aggregate, should not be included
+    df = df.loc[df["YEAR"] >= 2000]   # County Aggregate, should not be included
     result = None
     if state_code == -1:
-        result = df
+        country_data = {"YEAR": [],
+                        "VALUE": []}
+        for year in range(1900, 2024):
+            year_value = df.loc[df['YEAR'] == year, 'VALUE'].sum()
+            if year_value > 0:
+                country_data["YEAR"].append(year)
+                country_data["VALUE"].append(year_value)
+
+        result = pd.DataFrame(country_data)
     elif county_code == -1:
         result = df.loc[df["STATE_FIPS_CODE"] == state_code]
+        state_data = {"YEAR": [],
+                        "VALUE": []}
+        for year in range(1900, 2024):
+            year_value = result.loc[result['YEAR'] == year, 'VALUE'].sum()
+            if year_value > 0:
+                state_data["YEAR"].append(year)
+                state_data["VALUE"].append(year_value)
+
+        result = pd.DataFrame(state_data)
     else:
         result = df.loc[(df['COUNTY_CODE'] == county_code) & (df["STATE_FIPS_CODE"] == state_code)]
     # only_counties = df.loc[(df['county_code'] == county_code) & (df["state_code"] == state_code)]
