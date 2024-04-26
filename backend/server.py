@@ -10,7 +10,7 @@ import data_filterer
 app = Flask(__name__)
 CORS(app)
 
-@app.route('/predict', methods=['POST'])
+@app.route('/', methods=['POST'])
 def predict():
     data = request.get_json()
     county_code = data.get('COUNTY_CODE')
