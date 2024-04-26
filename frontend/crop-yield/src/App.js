@@ -98,7 +98,7 @@ function App() {
 
         try {
             //If doesnt work, update back to 127.0.0.1
-            const response = await fetch("http://localhost:5000", // Directly specifying the local address 
+            const response = await fetch("http://127.0.0.1:5000", // Directly specifying the local address 
             {    
                 method: 'POST',
                 headers: {
