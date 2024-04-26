@@ -145,8 +145,10 @@ function App() {
             const ctx = document.getElementById('scatterChart').getContext('2d');
 
             // Extract x and y data from cleanedData
-            const xData = cleanedData.map(entry => entry.YEAR);
-            const yData = cleanedData.map(entry => entry.VALUE);
+            const xData = cleanedData.map(entry => entry.year);
+            // const xData = cleanedData.map(entry => entry.YEAR);
+            const yData = cleanedData.map(entry => entry.value);
+            // const yData = cleanedData.map(entry => entry.VALUE);
 
             const nextYear = new Date().getFullYear() + 1;
 
