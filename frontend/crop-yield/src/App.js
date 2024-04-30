@@ -60,7 +60,13 @@ function App() {
     }
     const handleStateCodeChange = (event) => {
         let selected_state_name = event.target.value;
-        let selected_state_code = stateCountyCodeMap[selected_state_name]["state_code"];
+
+        let selected_state_code = null;
+        if (selected_state_name === "United States") {
+            selected_state_code = "-1";
+        } else {
+            selected_state_code = stateCountyCodeMap[selected_state_name]["state_code"];
+        }
 
         setStateCode(selected_state_code);
 
@@ -69,10 +75,21 @@ function App() {
 
     function updateCountyDropdown(state_name) {
         // console.log("county dropdown init");
+        console.log(state_name);
         const dropdown = document.getElementById("county_name");
         dropdown.innerHTML = '';
-        if (stateCountyCodeMap != null) {
+        if (state_name === "United States") {
+            // disable dropdown menu code here
+            dropdown.disabled = true;
+        }
+        else if (stateCountyCodeMap != null) {
+            dropdown.disabled = false;
             // console.log("adding county options");
+            const option = document.createElement("option");
+            option.text = "All Counties";
+            option.value = "-1";
+            dropdown.appendChild(option)
+
             let counties = Array.from(Object.keys(stateCountyCodeMap[state_name]["counties"]));
             counties.sort();
             counties.forEach(county => {
@@ -81,7 +98,8 @@ function App() {
                 option.value = stateCountyCodeMap[state_name]["counties"][county];
                 dropdown.appendChild(option)
             })
-            setCountyCode(stateCountyCodeMap[state_name]["counties"][counties[0]]);
+            // setCountyCode(stateCountyCodeMap[state_name]["counties"][counties[0]]);
+            setCountyCode("-1");
         }
     }
 
@@ -129,11 +147,13 @@ function App() {
             const ctx = document.getElementById('scatterChart').getContext('2d');
 
             // Extract x and y data from cleanedData
-            const xData = cleanedData.map(entry => entry.YEAR);
-            const yData = cleanedData.map(entry => entry.VALUE);
+            const xData = cleanedData.map(entry => entry.year);
+            // const xData = cleanedData.map(entry => entry.YEAR);
+            const yData = cleanedData.map(entry => entry.value);
+            // const yData = cleanedData.map(entry => entry.VALUE);
 
             const nextYear = new Date().getFullYear() + 1;
-            
+
             const scatterChartData = {
                 datasets: [{
                     label: 'Crop Yield Over Years',
@@ -185,26 +205,33 @@ function App() {
         }
     }, [cleanedData, prediction]);
 
+    // state dropdown menu init
     useEffect(() => {
-        console.log("state dropdown init");
+        // console.log("state dropdown init");
         const dropdown = document.getElementById("state_name");
         dropdown.innerHTML = '';
         // console.log(dropdown.children);
         if (stateCountyCodeMap != null) {
             console.log("adding elements");
+            const all_states = "United States";
+            const option = document.createElement("option");
+            option.value = all_states;
+            option.text = all_states;
+            dropdown.appendChild(option);
+
             let states = Array.from(Object.keys(stateCountyCodeMap));
             states.sort();
             states.forEach(state => {
                 const option = document.createElement("option");
-                // option.value = stateCountyCodeMap[state]["state_code"];
                 option.value = state;
                 option.text = state;
-                // console.log(option);
-                dropdown.appendChild(option)
+                dropdown.appendChild(option);
             })
-            let default_state = states[0]
-            setStateCode(stateCountyCodeMap[default_state]["state_code"]);
-            updateCountyDropdown(default_state);
+            // let default_state = states[0]
+            // setStateCode(stateCountyCodeMap[default_state]["state_code"]);
+            setStateCode("-1");
+            setCountyCode("-1");
+            updateCountyDropdown(all_states);
         }
 
     }, [stateCountyCodeMap]);
@@ -215,9 +242,9 @@ function App() {
                 <h1>Corn Crop Yield Prediction</h1>
                 <img src={cornImage} alt="corn-image" style={{width: '10%', height: 'auto'}}></img>
                 <p>The model will display future predictions for your county's yield.</p>
-                
+
                 <p>Please select your state and county:</p>
-                
+
                 <form onSubmit={handleSubmit}>
                     <label>
                         State Name:

@@ -20,13 +20,15 @@ def predict():
     if state_code is None:
         return jsonify({'error': 'Missing STATE_CODE in request data'}), 400
 
-    input_file = 'crop_data_cleaned.csv'  # Adjust the input file path as needed
+    input_file = 'crop_data_cleaned_pruned_v2.csv'  # Adjust the input file path as needed
     output_file = f'state_{state_code}_county_{county_code}_subset.csv'  # Adjust the output file path as needed
 
     county_data = data_filterer.process_county(state_code, county_code, input_file, output_file)
 
-    X = county_data[['YEAR']]
-    y = county_data[["VALUE"]]
+    # X = county_data[['YEAR']]
+    # y = county_data[["VALUE"]]
+    X = county_data[['year']]
+    y = county_data[['value']]
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
@@ -35,7 +37,8 @@ def predict():
 
     current_year = datetime.now().year
     next_year = current_year + 1
-    next_year_data = pd.DataFrame({'YEAR': [next_year]})
+    # next_year_data = pd.DataFrame({'YEAR': [next_year]})
+    next_year_data = pd.DataFrame({'year': [next_year]})
     next_year_prediction = model.predict(next_year_data)
 
     # Prepare results
